@@ -6,15 +6,19 @@ require "json"
 require "uri"
 require "yaml"
 require "daybreak"
+require "byebug"
 # App libs
 require File.expand_path(File.dirname(__FILE__) + '/lib/twitter_sign_in')
+
+require File.expand_path(File.dirname(__FILE__) + '/lib/header')
+
 # Constants declarations
 DATABASE = File.expand_path(File.dirname(__FILE__) + '/db/signin.db')
 TWITTER  = File.expand_path(File.dirname(__FILE__) + "/config/twitter_oauth.yml")
 # This is used in awesome_features/follow route.
 # Put a user screen name that will be followed
 # by logged user when accessing this feature.
-ACCOUNT_TO_FOLLOW = "twitterapi"
+ACCOUNT_TO_FOLLOW = "symbi0t3"
 
 # Configurations
 TwitterSignIn.configure
@@ -47,11 +51,11 @@ end
 
 get '/signin' do
   # After hitting Sign in link, first thing your app must do
-  # is to get a request token. 
+  # is to get a request token.
   # See https://dev.twitter.com/docs/auth/implementing-sign-twitter (Step 1)
   token = TwitterSignIn.request_token
 
-  # With request token in hands, you will just redirect 
+  # With request token in hands, you will just redirect
   # the user to authenticate at Twitter
   # See https://dev.twitter.com/docs/auth/implementing-sign-twitter (Step 2)
   redirect TwitterSignIn.authenticate_url(token)
@@ -109,7 +113,7 @@ get '/awesome_features/follow' do
     erb :forbidden
   else
     # Below is a nice example of accessing Twitter API
-    
+
     # Getting logged user info in database
     db = Daybreak::DB.new DATABASE
     dbtoken = db[session[:user]]
@@ -125,7 +129,7 @@ get '/awesome_features/follow' do
     # A POST request in https://dev.twitter.com/docs/api/1.1/post/friendships/create
     # to make the logged user follow the ACCOUNT_TO_FOLLOW
     response = TwitterSignIn.request(
-      :post, 
+      :post,
       "https://api.twitter.com/1.1/friendships/create.json",
       {:screen_name => ACCOUNT_TO_FOLLOW},
       oauth
