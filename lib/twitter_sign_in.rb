@@ -1,5 +1,6 @@
 require "net/https"
 require "simple_oauth"
+require "yaml"
 
 # This class implements the requests that should
 # be done to Twitter to be able to authenticate
@@ -8,9 +9,10 @@ class TwitterSignIn
 
   class << self
     def configure
+      credentials = YAML.load(File.open("config/twitter_oauth.yml"))
       @oauth = {
-                        consumer_key: "p3OwJzzZxdR1RMx3oRfmP1wWJ",
-                        consumer_secret: "g1bMZQUKYFtdkLkTqnWel46AEM0UFsnO0h6l5y3WCUvvB3jN5I"
+                        consumer_key: credentials["consumer_key"],
+                        consumer_secret: credentials["consumer_secret"]
                     }
     end
 
